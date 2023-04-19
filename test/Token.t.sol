@@ -1,24 +1,52 @@
-// // SPDX-License-Identifier: UNLICENSED
-// pragma solidity ^0.8.17;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.17;
 
-// import "forge-std/Test.sol";
-// import "../src/Counter.sol";
 
-// contract CounterTest is Test {
-//     Counter public counter;
+import "forge-std/console2.sol";
+import "forge-std/Test.sol";
+import "forge-std/Vm.sol";
+import "src/token/Token.sol";
 
-//     function setUp() public {
-//         counter = new Counter();
-//         counter.setNumber(0);
-//     }
+contract TestToken is Test {
+    Token token;
+    address constant tester = address(42);
 
-//     function testIncrement() public {
-//         counter.increment();
-//         assertEq(counter.number(), 1);
-//     }
+    function setUp() public {
+        token = new Token(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84);
+    }
 
-//     function testSetNumber(uint256 x) public {
-//         counter.setNumber(x);
-//         assertEq(counter.number(), x);
-//     }
-// }
+    function testInitialBalance() public {
+        uint expected = 15_000_000 ether;
+        uint balance = token.balanceOf(address(0x123));
+        assertEq(
+            balance,
+            expected,
+            "Initial balance should be 15_000_000 * 10**18 tokens"
+        );
+    }
+
+    function testTransfer() public {
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 10 ether;
+
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
+    }
+    /**
+    * Should not be able to mint more than max
+    */
+    function testFailMintLimits() public {
+        token.mint(tester, 101_000_000 ether);
+    }
+
+ 
+}

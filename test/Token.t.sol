@@ -48,5 +48,13 @@ contract TestToken is Test {
         token.mint(tester, 101_000_000 ether);
     }
 
+    function testBurn() public {
+        address burner = address(0xdead);
+        token.mint(burner, 10 ether);
+        vm.prank(burner);
+        token.burn(1 ether);
+        uint balance = token.balanceOf(burner);
+        assertEq(balance, 9 ether, "burner balance should be 9 tokens");
+    }
  
 }

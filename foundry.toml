@@ -12,4 +12,4 @@ arbitrum = "${RPC_URL_ARBITRUM}"
 
 [etherscan]
 goerli = {key = "${ETHERSCAN_KEY}", url = "https://api-goerli.etherscan.io/api"}
-mainnet = {key = "${ETHERSCAN_KEY}"}
+arbitrum = {key = "${ARBISCAN_KEY}"}

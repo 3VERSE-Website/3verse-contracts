@@ -3,10 +3,11 @@ pragma solidity ^0.8.17;
 
 import "openzeppelin/token/ERC20/ERC20.sol";
 import "openzeppelin/token/ERC20/extensions/ERC20Burnable.sol";
-import "openzeppelin/access/AccessControl.sol";
 import "openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "openzeppelin/access/AccessControl.sol";
+
 /// @title 3Verse Token contract
-contract Token is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
+contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     // "ether" is used here to get 18 decimals
     uint immutable MAX_SUPPLY = 100_000_000 ether;

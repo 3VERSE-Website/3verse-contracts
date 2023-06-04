@@ -12,9 +12,9 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     // "ether" is used here to get 18 decimals
     uint immutable MAX_SUPPLY = 100_000_000 ether;
     uint256 public constant DEVELOPMENT_FUND = 15_000_000 ether;
-    uint256 public constant TEAM_RESERVE = 8_000_000 ether;
+    uint256 public constant TEAM_RESERVE = 6_000_000 ether;
     uint256 public constant PARTNERS_ADVISORS = 3_000_000 ether;
-    uint256 public constant MARKETING = 8_000_000 ether;
+    uint256 public constant PRESALES = 4_000_000 ether;
 
     // to replace with safe addresses prior to deployment
     address public constant DEVELOPMENT_FUND_ADDRESS = address(0x123);
@@ -29,7 +29,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
         _mint(DEVELOPMENT_FUND_ADDRESS, DEVELOPMENT_FUND);
         _mint(TEAM_RESERVE_ADDRESS, TEAM_RESERVE);
         _mint(PARTNERS_ADVISORS_ADDRESS, PARTNERS_ADVISORS);
-        _mint(MARKETING_ADDRESS, MARKETING);
+        _mint(MARKETING_ADDRESS, PRESALES);
     }
 
     /**

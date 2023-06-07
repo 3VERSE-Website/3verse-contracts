@@ -12,7 +12,7 @@ contract TestToken is Test {
     address constant tester = address(42);
 
     function setUp() public {
-        token = new Token(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84);
+        token = new Token(address(this));
     }
 
     function test_SetUpState() public {
@@ -23,7 +23,7 @@ contract TestToken is Test {
         );
         assertEq(
             token.balanceOf(token.TEAM_RESERVE_ADDRESS()),
-            8_000_000 ether,
+            6_000_000 ether,
             "Incorrect team reserve balance"
         );
         assertEq(
@@ -32,9 +32,19 @@ contract TestToken is Test {
             "Incorrect partners-advisors balance"
         );
         assertEq(
-            token.balanceOf(token.MARKETING_ADDRESS()),
-            8_000_000 ether,
-            "Incorrect marketing fund balance"
+            token.balanceOf(token.PRESALES_ADDRESS()),
+            4_000_000 ether,
+            "Incorrect presales fund balance"
+        );
+        assertEq(
+            token.balanceOf(token.PUBLICSALE_ADDRESS()),
+            24_000_000 ether,
+            "Incorrect public sale fund balance"
+        );
+        assertEq(
+            token.balanceOf(token.LIQUIDTY_ADDRESS()),
+            2_000_000 ether,
+            "Incorrect liquidity sale fund balance"
         );
     }
 

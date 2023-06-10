@@ -50,7 +50,7 @@ contract TestToken is Test {
 
     function test_InitialBalance() public {
         uint expected = 15_000_000 ether;
-        uint balance = token.balanceOf(address(0x123));
+        uint balance = token.balanceOf(address(0xCbe17f635E37E78D8a2d8baBD1569f1DeD3D4f87));
         assertEq(
             balance,
             expected,

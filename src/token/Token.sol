@@ -114,11 +114,9 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
         _transferFeeExempt[account] = true;
     }
 
-    /**
-    * @dev Check if the address given is extempt from transfer fees
-    * @param account The address to check
-    * @return A boolean if the address passed is exempt from transfer fees
-    */
+    /// @dev Check if the address given is exempt from transfer fees
+    /// @param account The address to check
+    /// @return A boolean if the address passed is exempt from transfer fees
     function isTransferFeeExempt(address account) public view returns(bool) {
         return _transferFeeExempt[account];
     }

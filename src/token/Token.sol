@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "openzeppelin/token/ERC20/ERC20.sol";
-import "openzeppelin/token/ERC20/extensions/ERC20Burnable.sol";
-import "openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
-import "openzeppelin/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 interface IAntisnipe {
     function assureCanTransfer(
@@ -18,6 +18,7 @@ interface IAntisnipe {
 /// @title 3Verse Token contract
 contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant FEE_EXEMPTER_ROLE = keccak256("FEE_EXEMPTER_ROLE");
     ///@dev "ether" is used here to get 18 decimals
     uint public constant MAX_SUPPLY = 100_000_000 ether;
     ///@notice These are the amounts ear marked for the different type of accounts
@@ -31,6 +32,8 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     ///@notice This is the tax percentage to start
     uint8 public percentage = 15;
     bool public taxable;
+    // Addresses not subject to transfer fees
+    mapping (address => bool) private _transferFeeExempt;
 
     ///@notice These are the safe mutlisig addresses that will receive the tokens 
     address public constant DEVELOPMENT_FUND_ADDRESS = address(0xCbe17f635E37E78D8a2d8baBD1569f1DeD3D4f87);
@@ -75,7 +78,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
         address to,
         uint256 amount
     ) internal virtual override {
-        if (taxable) {
+        if (taxable && !isTransferFeeExempt(from)) {
             _transferWithFees(from, to, amount);
         } else {
             super._transfer(from, to, amount);
@@ -103,6 +106,20 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     function setTaxable(bool _taxable, uint8 _percentage) external onlyRole(DEFAULT_ADMIN_ROLE) {
         taxable = _taxable;
         percentage = _percentage;
+    }
+
+    /// @dev allow disabling of the transfer fee for certain contracts using a fee exempter role
+    function setTransferFeeExempt(address account) external onlyRole(FEE_EXEMPTER_ROLE) {
+        _transferFeeExempt[account] = true;
+    }
+
+    /**
+    * @dev Check if the address given is extempt from transfer fees
+    * @param account The address to check
+    * @return A boolean if the address passed is exempt from transfer fees
+    */
+    function isTransferFeeExempt(address account) public view returns(bool) {
+        return _transferFeeExempt[account];
     }
 
     

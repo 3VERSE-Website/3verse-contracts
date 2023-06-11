@@ -39,7 +39,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     address public constant PRESALES_ADDRESS = address(0xE4581C15e5EcBb9fe054F01979c4b9Ab4e81A0fc);
     address public constant PUBLICSALE_ADDRESS = address(0x49e792d6a5CeeBf7A14FB521Af44750167804038);
     address public constant LIQUIDTY_ADDRESS = address(0xF8B2ac3462738FFDEB21cE64B4d25772c3643111);
-    address public constant FEE_ADDRESS = address(0xF8B2ac3462738FFDEB21cE64B4d25772c3643111);
+    address public constant FEE_ADDRESS = address(0xdEFaE8a08FD0E3023eF7E14c08C622Ad4F22aC9A);
     
     ///@notice This is the anti-snipe contract address from gotbit
     IAntisnipe public antisnipe;

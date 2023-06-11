@@ -52,6 +52,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     constructor(address owner) ERC20("3VERSE", "VERS") ERC20Permit("3VERSE") {
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(MINTER_ROLE, owner);
+        _grantRole(FEE_EXEMPTER_ROLE, owner);
 
         _mint(DEVELOPMENT_FUND_ADDRESS, DEVELOPMENT_FUND);
         _mint(TEAM_RESERVE_ADDRESS, TEAM_RESERVE);

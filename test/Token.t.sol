@@ -116,6 +116,40 @@ contract TestToken is Test {
         assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
     }
 
+    function test_TaxTransfer() public {
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 10 ether;
+
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
+    }
+
+    function test_TaxExemptTransfer() public {
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 10 ether;
+
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
+    }
+
     function test_TransferFrom() public {
         token.mint(tester, 100 ether);
         vm.prank(tester);

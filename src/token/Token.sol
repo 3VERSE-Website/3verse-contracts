@@ -31,6 +31,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
 
     ///@notice This is the tax percentage to start
     uint8 public percentage = 15;
+    uint8 public constant MAX_TAX_PERCENTAGE = 25;
     bool public taxable;
     // Addresses not subject to transfer fees
     mapping (address => bool) private _transferFeeExempt;
@@ -105,6 +106,7 @@ contract Token is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
     /// @param _taxable is the boolean to set if the token is taxable or not
     /// @param _percentage is the percentage of tax to apply
     function setTaxable(bool _taxable, uint8 _percentage) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_percentage <= MAX_TAX_PERCENTAGE, "Tax exceeds max!");
         taxable = _taxable;
         percentage = _percentage;
     }

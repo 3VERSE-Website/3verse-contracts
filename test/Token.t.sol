@@ -10,6 +10,7 @@ import "src/token/Token.sol";
 contract TestToken is Test {
     Token token;
     address constant tester = address(42);
+    address constant contractx = address(33);
 
     function setUp() public {
         token = new Token(address(this));
@@ -50,7 +51,7 @@ contract TestToken is Test {
 
     function test_InitialBalance() public {
         uint expected = 15_000_000 ether;
-        uint balance = token.balanceOf(address(0x123));
+        uint balance = token.balanceOf(address(0xCbe17f635E37E78D8a2d8baBD1569f1DeD3D4f87));
         assertEq(
             balance,
             expected,
@@ -115,6 +116,81 @@ contract TestToken is Test {
         assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
         assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
     }
+
+    function test_TaxTransfer() public {
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 100 ether;
+        token.setTaxable(true, 25);
+
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        uint feeBalance = token.balanceOf(address(0xdEFaE8a08FD0E3023eF7E14c08C622Ad4F22aC9A));
+        assertEq(fromBalance, 0 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 75 ether, "To balance should be 70 tokens");
+        assertEq(feeBalance, 25 ether, "Fee balance should be 30 tokens");
+    }
+
+    function test_TaxExemptTransfer() public {
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 10 ether;
+        token.setTaxable(true, 20);
+        token.setTransferFeeExempt(tester);
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
+    }
+
+    function test_TaxSet() public {
+        token.setTaxable(true, 25);
+
+        // Check tax
+        uint percentage = token.percentage();
+        bool taxable = token.taxable();
+        assertEq(taxable, true, "Tax is set");
+        assertEq(percentage, 25, "percentage is 25%");
+    }
+
+    function testFail_TaxSet() public {
+        token.setTaxable(true, 26);
+    }
+
+    function test_TaxExemptTransferDifferentExemptor() public {
+        bytes32 FEE_EXEMPTER_ROLE = keccak256("FEE_EXEMPTER_ROLE");
+
+        token.mint(tester, 100 ether);
+        address from = tester;
+        address to = address(0x69);
+        uint amount = 10 ether;
+        token.setTaxable(true, 20);
+        token.grantRole(FEE_EXEMPTER_ROLE, contractx);
+        vm.prank(contractx);
+        token.setTransferFeeExempt(tester);
+        // Transfer tokens
+        vm.prank(tester);
+        token.transfer(to, amount);
+
+        // Check balances
+        uint fromBalance = token.balanceOf(from);
+        uint toBalance = token.balanceOf(to);
+        assertEq(fromBalance, 90 ether, "From balance should be 90 tokens");
+        assertEq(toBalance, 10 ether, "To balance should be 10 tokens");
+    }
+
 
     function test_TransferFrom() public {
         token.mint(tester, 100 ether);

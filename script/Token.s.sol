@@ -14,11 +14,7 @@ contract DeployScript is CREATE3Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        c = Token(
-            create3.deploy(
-                getCreate3ContractSalt("Token"), bytes.concat(type(Token).creationCode, abi.encode(param))
-            )
-        );
+        c = new Token(param);
 
         vm.stopBroadcast();
     }
